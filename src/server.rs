@@ -1,4 +1,3 @@
-
 fn main() {
 
 
@@ -40,8 +39,14 @@ fn main() {
                 // Rust의 구조체는 사용자 지정 데이터 타입이다.
                 // 이를 이용해 관련 데이터를 한 곳에 모을 수 있다.
                 // 객체 지향 언어의 클래스와 비슷한 역할을 한다.
+
+    let get = Method::GET("abcd".to_string());
+    let delete = Method::DELETE(100);
+    let post = Method::POST;
+    let put = Method::PUT;
+
     let server = Server::new("127.0.0.1:8080".to_string());
-    // server.run();
+    server.run();
 }
 
 // Server 구조체 생성
@@ -77,3 +82,39 @@ impl Server {
         }
     }
 }
+
+struct Request {
+    path : String,
+    query_string : String,
+    // 해당 method는 사실 String이 아닌 Enum으로 표현될 수 있다, 가능한 메소드는 정해져 있기 때문이다.
+    // Enum은 유한한 값 집합을 갖고 있는 특수한 타입이다.
+    // 언어별 enum은 상당히 다른데, Rust의 enum은 haskell의 대수 자료형과 유사하다.
+    // JPA에서 String으로 관리하는 것과 비슷함
+    method : Method,
+}
+
+enum Method {
+
+    // 메모리에서 Enum은 단순한 숫자로 표시된다,
+    // GET으로 온다면 0, 이후부턴 1씩 증가하는 식으로 표현된다.
+    // 요청은 query_string을 받기 때문에 실제로 String을 가진다고 볼 수 있다.
+    GET(String),
+    // delete는 db로 지운다는 명령을 줘야하기때문에 u64를 가진다
+    // rust enum의 장점은 다른 유형의 데이터를 담을 수 있다는 것이다
+    DELETE(u64),
+    POST,
+    PUT,
+    // 이렇게 바꾸게되면, 앞부분은 똑같이 0,1,2 가 되고, put은 5가되고 이후부터는 6,7,8... 으로 진행되게 된다.
+    // PUT = 5,
+    HEAD,
+    CONNECT,
+    OPTIONS,
+    TRACE,
+    PATCH,
+}
+
+/* 일반적인 HTTP 요청
+GET /user?id=10 HTTP/1.1\r\n
+HEADERS \r\n
+BODY
+*/
