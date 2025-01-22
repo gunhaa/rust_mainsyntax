@@ -40,11 +40,16 @@ fn main() {
                 // 이를 이용해 관련 데이터를 한 곳에 모을 수 있다.
                 // 객체 지향 언어의 클래스와 비슷한 역할을 한다.
 
-    let get = Method::GET("abcd".to_string());
-    let delete = Method::DELETE(100);
-    let post = Method::POST;
-    let put = Method::PUT;
+    // let get = Method::GET("abcd".to_string());
+    // let delete = Method::DELETE(100);
+    // let post = Method::POST;
+    // let put = Method::PUT;
 
+    // 메소드 GET에서 없음, 있음을 rust에서 표현하는 방법?
+    // rust에는 null 이 존재하지 않는다
+    // 대신 표준 라이브러리 Enum Option을 사용한다
+    // Option 은 두가지 상태 None, Some(T)가 존재한다.
+    // T는 제네릭 타입을 의미한다. 어떤 타입도 담을 수 있지만, 명시적으로 지정되어야 한다.
     let server = Server::new("127.0.0.1:8080".to_string());
     server.run();
 }
@@ -85,7 +90,12 @@ impl Server {
 
 struct Request {
     path : String,
-    query_string : String,
+
+    // 해당 방식으로 query_string의 유무를 알 수 있다.
+    // Option은 너무 자주 사용되기에 자동 import된다
+    // 만약 import되지 않는다면, 수동으로 use std::option::Option;을 입력해야 할 것이다.
+    query_string : Option<String>,
+    // query_string : String,
     // 해당 method는 사실 String이 아닌 Enum으로 표현될 수 있다, 가능한 메소드는 정해져 있기 때문이다.
     // Enum은 유한한 값 집합을 갖고 있는 특수한 타입이다.
     // 언어별 enum은 상당히 다른데, Rust의 enum은 haskell의 대수 자료형과 유사하다.
@@ -98,10 +108,10 @@ enum Method {
     // 메모리에서 Enum은 단순한 숫자로 표시된다,
     // GET으로 온다면 0, 이후부턴 1씩 증가하는 식으로 표현된다.
     // 요청은 query_string을 받기 때문에 실제로 String을 가진다고 볼 수 있다.
-    GET(String),
+    GET,
     // delete는 db로 지운다는 명령을 줘야하기때문에 u64를 가진다
     // rust enum의 장점은 다른 유형의 데이터를 담을 수 있다는 것이다
-    DELETE(u64),
+    DELETE,
     POST,
     PUT,
     // 이렇게 바꾸게되면, 앞부분은 똑같이 0,1,2 가 되고, put은 5가되고 이후부터는 6,7,8... 으로 진행되게 된다.
