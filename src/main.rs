@@ -35,7 +35,7 @@ fn main() {
 
 
     let s1 = &input;
-   let s2 = &input;
+    let s2 = &input;
 //    let s2 = &mut input;
   
     println!("s1 : {}, s2: {}", s1, s2);
@@ -66,8 +66,8 @@ fn main() {
     // 다음과 같은 방식은 복사가 가능하다.
     // 컴파일 단계에서 크기를 알 수 있는 스택에 저장되기 때문에
     // 하지만 heap에 저장된 경우는 다르다.
-    let a= 5;
-    let b =a;
+    // let a= 5;
+    // let b =a;
 
 
     // 소유권 : Rust에서 가장 중요한 개념이다
@@ -76,11 +76,27 @@ fn main() {
     // 1. Rust에서 각각의 값은 변수가 소유한다.
     // 2. 소유자가 범위를 벗어나면, 그 값은 해제된다.
     // 3. 특정 시점의 값의 소유자는 단 하나뿐이다.
-    io::stdin().read_line(&mut input);
-    let mut mars_weight = calculate_weight_on_mars(100.0);
-    mars_weight = mars_weight * 1000.0;
+    // unwrap 메소드를 사용하면 오류가 있을때 프로그램을 종료 시킬 수 있다
+    // Result는 rust의 핵심이다.
 
-    println!("Weight on Mars : {}g", mars_weight);
+    println!("Enter your weight (kg) : ");
+    io::stdin().read_line(&mut input).unwrap();
+
+    // 공백 제거
+    // 부동소수점으로 변경
+    // parse 함수는 Result를 반환한다
+    // parse 함수를 사용했을때 중간에 숫자가아닌 문자가 있으면 오류가 발생해서, 종료시켜야 하기 때문이다.
+    // 오류의 위험이 있는것은 Result로 반환시킨다.
+    let weight : f32 = input.trim().parse().unwrap();
+    // println!("weight : {} ", weight);
+    // println!("input : {}", input);
+
+
+
+    let mut mars_weight = calculate_weight_on_mars(weight);
+    // mars_weight = mars_weight * 1000.0;
+
+    println!("Weight on Mars : {}kg", mars_weight);
 
     // calculate_weight_on_mars();
 }
@@ -114,5 +130,5 @@ fn calculate_weight_on_mars(weight : f32) -> f32{
 // }
 
 fn some_fn2(s: &mut String){
-    s.push_str("a");
+    // s.push_str("a");
 }
